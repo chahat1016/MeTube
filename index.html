@@ -12,40 +12,46 @@
 </head>
 
 <body>
-  <h1 class="heading">MeTube</h1>
-
-  <button id="toggleDarkModeButton" onclick="toggleDarkMode()"><span id="darkModeIcon" class="material-symbols-outlined">
-      dark_mode
-    </span></button>
-
-  <div class="search-container">
-    <input type="text" id="searchInput" placeholder="ONLY STUDY!!!">
-    <button id="searchButton" onclick="searchVideos()">Search</button>
-  </div>
-
-  <div class="video-container">
-    <div id="videoWrapper">
-      <iframe id="videoPlayer" src="" frameborder="0" allowfullscreen></iframe>
+  <nav class="navbar">
+    <h1 class="heading">MeTube</h1>
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Search for Video">
+      <button id="searchButton" onclick="searchVideos()">Search</button>
     </div>
-  </div>
-
-  <h2 id="videoTitle" class="video-title"></h2>
-
-  <div class="cdButtons">
-    <button id="toggleDescriptionButton" onclick="toggleDescription()">
-      <span class="material-symbols-outlined">description</span>
+    <button id="toggleDarkModeButton" onclick="toggleDarkMode()" class="dark-mode-symbol">
+      <span id="darkModeIcon" class="material-symbols-outlined">
+        dark_mode
+      </span>
     </button>
-    <button id="toggleCommentButton" onclick="showComments()">
-      <span class="material-symbols-outlined">comment</span>
-    </button>
-  </div>
+  </nav>
 
-  <div class="description-container" id="descriptionContainer">
-    <p id="videoDescription"></p>
-  </div>
+  <div class="video-section">
+    <div class="left-content">
+      <div class="video-container">
+        <div id="videoWrapper">
+          <iframe id="videoPlayer" src="" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <h2 id="videoTitle" class="video-title"></h2>
+      </div>
+    </div>
 
-  <div class="comment-container" id="commentContainer">
-    <!-- Comments will be displayed here -->
+    <div class="right-content">
+      <div class="cdButtons">
+        <button id="toggleDescriptionButton" onclick="toggleDescription()">
+          <span class="material-symbols-outlined">description</span>
+        </button>
+        <button id="toggleCommentButton" onclick="showComments()">
+          <span class="material-symbols-outlined">comment</span>
+        </button>
+      </div>
+      <div class="description-comment-section">
+        <div class="description-container" id="descriptionContainer">
+          <p id="videoDescription"></p>
+        </div>
+        <div class="comment-container" id="commentContainer">
+        </div>
+      </div>
+    </div>
   </div>
 
   <div id="searchResults" class="search-results"></div>
