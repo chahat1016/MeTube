@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Poppins:wght@600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Poppins:wght@600&display=swap");
 
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   margin: 0;
   padding: 0;
   background-color: #f9f9f9;
@@ -10,8 +10,8 @@ body {
 
 .navbar {
   display: flex;
-  justify-content: space-between; 
-  align-items: center; 
+  justify-content: space-between;
+  align-items: center;
   padding: 11px 20px;
   background-color: #fff;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
@@ -21,18 +21,18 @@ body {
 }
 
 .heading {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 2rem; 
+  font-family: "Montserrat", sans-serif;
+  font-size: 2rem;
   color: #ff0000;
   letter-spacing: 2px;
   margin: 0;
-  flex: 1; 
+  flex: 1;
 }
 
 .search-container {
   display: flex;
-  align-items: center; 
-  flex: 2; 
+  align-items: center;
+  flex: 2;
 }
 
 .search-container input[type="text"] {
@@ -69,18 +69,18 @@ body {
 
 .video-section {
   display: flex;
-  justify-content: space-between; 
+  justify-content: space-between;
   max-width: 1200px;
   margin: 30px auto;
   padding: 0 10px;
 }
 
 .left-content {
-  flex: 2; 
+  flex: 2;
 }
 
 .right-content {
-  flex: 1; 
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -95,7 +95,7 @@ body {
 #videoWrapper {
   position: relative;
   width: 100%;
-  padding-top: 56.25%; 
+  padding-top: 56.25%;
 }
 
 #videoPlayer {
@@ -133,23 +133,33 @@ body {
 .description-comment-section {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-left: 150px;
-  width: 115%; 
-  height: 405px; 
+  margin-left: 200px;
 }
 
-#descriptionContainer, #commentContainer {
+#descriptionContainer {
   display: none;
   padding: 10px;
-  background-color: #fff;
+  background-color: #f7f0f0;
   border-radius: 5px;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-  overflow-y: auto; 
+  overflow-y: auto;
   margin-bottom: 20px;
+  width: 500px;
+  height: 250px;
 }
 
-.dark-mode #descriptionContainer, 
+#commentContainer {
+  display: none;
+  padding: 10px;
+  background-color: #f7f0f0;
+  border-radius: 5px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  width: 500px;
+  height: 200px;
+}
+
+.dark-mode #descriptionContainer,
 .dark-mode #commentContainer {
   background-color: #444;
   color: white;
@@ -189,9 +199,9 @@ body {
   display: block;
   margin: 20px auto;
   color: red;
-  
+
   background-color: transparent;
- 
+
   border: none;
   border-radius: 5px;
   padding: 5px 20px;
@@ -200,17 +210,16 @@ body {
 }
 
 #toggleCommentButton {
-    display: block;
-    margin: 20px auto;
-    background-color: transparent;
-    color: red; 
-    border: none;
-    border-radius: 5px;
-    padding: 5px 20px;
-    font-size: 16px;
-    cursor: pointer;
+  display: block;
+  margin: 20px auto;
+  background-color: transparent;
+  color: red;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 20px;
+  font-size: 16px;
+  cursor: pointer;
 }
-
 
 #toggleDarkModeButton {
   position: absolute;
@@ -220,7 +229,7 @@ body {
   padding: 0;
   cursor: pointer;
   transition: filter 0.3s;
-  border-radius: 50%; 
+  border-radius: 50%;
   width: 40px;
   height: 40px;
   display: flex;
@@ -236,12 +245,10 @@ body {
   background-color: #222;
 
   color: #fff;
-
 }
 
 .dark-mode .heading {
   color: #ff0000;
-
 }
 
 .dark-mode .search-container input[type="text"] {
@@ -250,33 +257,33 @@ body {
   color: white;
 
   border-color: #666;
-
 }
 
 .dark-mode .search-container button {
-  background-color: #ff0000;}
+  background-color: #ff0000;
+}
 
 .dark-mode .result-item {
   background-color: #444;
-
   box-shadow: 0px 2px 5px rgba(255, 255, 255, 0.1);
-
 }
 
+#toggleDarkModeButton:hover {
+  filter: brightness(1.2);
+}
 
 .dark-mode #toggleDarkModeButton {
-  color: white;
-
-
+  background-color: transparent; /* Keep the background of the button transparent */
+  border: none;
+  color: #222;
 }
 
 .dark-mode #descriptionContainer {
   background-color: #444;
   color: white;
-
 }
 
-.dark-mode #commentContainer{
+.dark-mode #commentContainer {
   background-color: #444;
   color: white;
 }
@@ -284,46 +291,47 @@ body {
 /* media queries */
 
 @media screen and (max-width: 1024px) {
-
   .navbar {
     padding: 8px 15px;
   }
 
   .heading {
-    font-size: 1.8rem; 
+    font-size: 1.8rem;
   }
 
   .search-container input[type="text"] {
-    width: 250px; 
+    width: 250px;
   }
 
   .video-section {
-    flex-direction: column; 
+    flex-direction: column;
     align-items: center;
   }
 
-  .left-content, .right-content {
-    flex: 1; 
-    width: 100%; 
+  .left-content,
+  .right-content {
+    flex: 1;
+    width: 100%;
   }
 
   .video-container {
-    width: 100%; 
+    width: 100%;
   }
 
   .cdButtons {
-    flex-direction: row; 
-    justify-content: space-around; 
+    flex-direction: row;
+    justify-content: space-around;
   }
 
   .description-comment-section {
     width: 100%;
-    margin-left: 0; 
-    height: auto; 
+    margin-left: 0;
+    height: auto;
   }
 
-  #descriptionContainer, #commentContainer {
-    width: 100%; 
+  #descriptionContainer,
+  #commentContainer {
+    width: 100%;
   }
 
   .result-item {
@@ -331,7 +339,7 @@ body {
   }
 
   #toggleDarkModeButton {
-    right: 20px; 
+    right: 20px;
   }
 }
 
@@ -429,9 +437,9 @@ body {
     font-size: 16px; /* Adjust for smaller screens */
   }
 
-  p, button, input {
+  p,
+  button,
+  input {
     font-size: 14px; /* Reduce font size globally for small screens */
   }
 }
-
-
