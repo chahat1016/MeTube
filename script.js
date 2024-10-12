@@ -1,16 +1,12 @@
 const API_KEY = 'AIzaSyCQqvQhNs-lX7KoUCErol_05C5pM15YCRQ';
 const SEARCH_ENDPOINT = 'https://www.googleapis.com/youtube/v3/search';
-
 let isDescriptionVisible = true;
 let isCommentVisible = false;
 
 function searchVideos() {
   const searchInput = document.getElementById('searchInput').value;
-
-  // Clear previous video, search results, and video description
   document.getElementById('videoPlayer').src = '';
   document.getElementById('searchResults').innerHTML = '';
-  // document.getElementById('videoDescription').innerText = '';
   document.getElementById('videoTitle').innerText = ''; // Clear video title
   document.getElementById('descriptionContainer').style.display = 'none'; // Hide description container
   document.getElementById('commentContainer').style.display = 'none'; // Hide comment container
@@ -126,15 +122,13 @@ function toggleComments() {
   commentContainer.style.display = isCommentVisible ? 'block' : 'none';
 }
 
-let isDarkMode = false;
-
 function toggleDarkMode() {
   const body = document.body;
   const darkModeIcon = document.getElementById('darkModeIcon');
-  isDarkMode = !isDarkMode;
   body.classList.toggle("dark-mode");
-  darkModeIcon.innerText = isDarkMode ? 'light_mode' : 'dark_mode';
+  darkModeIcon.innerText = body.classList.contains("dark-mode") ? 'light_mode' : 'dark_mode';
 }
+
 
 function getVideoIdFromPlayer() {
   const videoPlayer = document.getElementById('videoPlayer');

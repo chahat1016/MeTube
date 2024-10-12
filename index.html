@@ -2,56 +2,58 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MeTube</title>
-
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeTube</title>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <h1 class="heading">MeTube</h1>
+    <nav class="navbar">
+        <h1 class="heading">MeTube</h1>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search for Video">
+            <button id="searchButton" onclick="searchVideos()">Search</button>
+        </div>
+        <button id="toggleDarkModeButton" onclick="toggleDarkMode()">
+            <span id="darkModeIcon" class="material-symbols-outlined">dark_mode</span>
+        </button>
+    </nav>
 
-  <button id="toggleDarkModeButton" onclick="toggleDarkMode()"><span id="darkModeIcon" class="material-symbols-outlined">
-      dark_mode
-    </span></button>
+    <div class="video-section">
+        <div class="left-content">
+            <div class="video-container">
+                <div id="videoWrapper">
+                    <iframe id="videoPlayer" src="" frameborder="0" allowfullscreen></iframe>
+                </div>
+                <h2 id="videoTitle" class="video-title"></h2>
+            </div>
+        </div>
 
-  <div class="search-container">
-    <input type="text" id="searchInput" placeholder="ONLY STUDY!!!">
-    <button id="searchButton" onclick="searchVideos()">Search</button>
-  </div>
-
-  <div class="video-container">
-    <div id="videoWrapper">
-      <iframe id="videoPlayer" src="" frameborder="0" allowfullscreen></iframe>
+        <div class="right-content">
+            <div class="cdButtons">
+                <button id="toggleDescriptionButton" onclick="toggleDescription()">
+                    <span class="material-symbols-outlined">Description</span>
+                </button>
+                <button id="toggleCommentButton" onclick="showComments()">
+                    <span class="material-symbols-outlined">Comment</span>
+                </button>
+            </div>
+            <div class="description-comment-section">
+                <div class="description-container" id="descriptionContainer">
+                    <p id="videoDescription"></p>
+                </div>
+                <div class="comment-container" id="commentContainer">
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <h2 id="videoTitle" class="video-title"></h2>
+    <div id="searchResults" class="search-results"></div>
 
-  <div class="cdButtons">
-    <button id="toggleDescriptionButton" onclick="toggleDescription()">
-      <span class="material-symbols-outlined">description</span>
-    </button>
-    <button id="toggleCommentButton" onclick="showComments()">
-      <span class="material-symbols-outlined">comment</span>
-    </button>
-  </div>
-
-  <div class="description-container" id="descriptionContainer">
-    <p id="videoDescription"></p>
-  </div>
-
-  <div class="comment-container" id="commentContainer">
-    <!-- Comments will be displayed here -->
-  </div>
-
-  <div id="searchResults" class="search-results"></div>
-
-  <script src="script.js"></script>
-
+    <script src="script.js"></script>
 </body>
 
 </html>
