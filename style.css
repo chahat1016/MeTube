@@ -67,38 +67,11 @@ body {
 
 /* video section */
 
-.Default-video-section {
-  text-align: center;
-  padding: 20px;
-}
-
-h2 {
-  color: #333;
-}
-
-.Default-video-container {
-  width: 100%;
-  height: 315px;
-  border-radius: 8px;
-  max-width: 900px;
-  background-color: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.422);
-  margin: auto;
-  position: relative;
-}
-
-iframe {
-  width: 100%;
-  height: 315px;
-  border: none;
-  border-radius: 8px;
-}
-
 .video-section {
   display: flex;
+  margin: 1rem 10%;
   justify-content: space-between;
   max-width: 1200px;
-  padding: 0 10px;
 }
 
 .left-content {
@@ -269,9 +242,6 @@ iframe {
 
 .dark-mode h2{
   color: white;
-}
-.dark-mode .Default-video-container{
-  box-shadow: 0 0 10px rgba(255, 0, 0, 0.558);
 }
 
 .dark-mode #darkModeIcon{

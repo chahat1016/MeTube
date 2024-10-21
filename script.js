@@ -3,39 +3,6 @@ const SEARCH_ENDPOINT = 'https://www.googleapis.com/youtube/v3/search';
 let isDescriptionVisible = true;
 let isCommentVisible = false;
 
-const playlistId = 'PLbpi6ZahtOH52LYtSWWPEcDyN_nBiw50G';
-
-async function fetchYouTubeVideos() {
-    const apiUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${playlistId}&key=${API_KEY}`;
-
-    try {
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-        return data.items; 
-    } catch (error) {
-        console.error('Error fetching YouTube videos:', error);
-        return [];
-    }
-}
-
-async function playRandomVideo() {
-    const videos = await fetchYouTubeVideos();
-
-    if (videos.length === 0) {
-        console.log('No videos found.');
-        return;
-    }
-
-  
-    const randomIndex = Math.floor(Math.random() * videos.length);
-    const selectedVideoId = videos[randomIndex].snippet.resourceId.videoId;
-
-    document.getElementById('youtube-video').src = `https://www.youtube.com/embed/${selectedVideoId}?autoplay=1`;
-}
-
-window.onload = playRandomVideo;
-
-
 function searchVideos() {
   const searchInput = document.getElementById('searchInput').value;
   document.getElementById('videoPlayer').src = '';
