@@ -69,10 +69,9 @@ body {
 
 .video-section {
   display: flex;
+  margin: 1rem 10%;
   justify-content: space-between;
   max-width: 1200px;
-  margin: 30px auto;
-  padding: 0 10px;
 }
 
 .left-content {
@@ -241,10 +240,21 @@ body {
   filter: brightness(1.2);
 }
 
+.dark-mode h2{
+  color: white;
+}
+
+.dark-mode #darkModeIcon{
+  color: white;
+}
 .dark-mode {
   background-color: #222;
 
   color: #fff;
+}
+
+.dark-mode .navbar{
+  background-color: #161616;
 }
 
 .dark-mode .heading {
@@ -252,11 +262,11 @@ body {
 }
 
 .dark-mode .search-container input[type="text"] {
-  background-color: #444;
+  background-color: #2d2d2d;
 
   color: white;
 
-  border-color: #666;
+  border-color: #787878;
 }
 
 .dark-mode .search-container button {
