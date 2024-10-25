@@ -453,3 +453,37 @@ body {
     font-size: 14px; /* Reduce font size globally for small screens */
   }
 }
+
+/* Fiter Section  */
+
+.filter-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  overflow-x: auto; 
+  padding: 10px 0;
+  white-space: nowrap; 
+  scrollbar-width: none; 
+  max-width: 100%; 
+  margin: 0 auto; 
+}
+
+.filter-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  flex-shrink: 0; 
+}
+
+.filter-btn:hover {
+  background-color: #0056b3;
+}
+
+.filter-btn:active {
+  background-color: #003f7f;
+}

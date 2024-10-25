@@ -3,7 +3,7 @@ const SEARCH_ENDPOINT = 'https://www.googleapis.com/youtube/v3/search';
 let isDescriptionVisible = true;
 let isCommentVisible = false;
 
-function searchVideos() {
+function searchVideos(category = '') {
   const searchInput = document.getElementById('searchInput').value;
   document.getElementById('videoPlayer').src = '';
   document.getElementById('searchResults').innerHTML = '';
@@ -12,8 +12,13 @@ function searchVideos() {
   document.getElementById('commentContainer').style.display = 'none'; // Hide comment container
   hideButtons(); // Hide buttons
 
+  let query = searchInput;
+  if (category && category !== 'all') {
+    query = category; // Override the search query if a category is selected
+  }
+
   // Make API request to search for videos
-  fetch(`${SEARCH_ENDPOINT}?part=snippet&maxResults=10&q=${searchInput}&type=video&key=${API_KEY}`)
+  fetch(`${SEARCH_ENDPOINT}?part=snippet&maxResults=10&q=${query}&type=video&key=${API_KEY}`)
     .then(response => response.json())
     .then(data => {
       if (data.items.length > 0) {
