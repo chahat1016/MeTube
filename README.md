@@ -21,7 +21,7 @@ We appreciate your interest in contributing to **MeTube**. Here's how you can ge
 
 4. **Add an upstream link to the main branch in your cloned repo:**
 ```
-    git remote add upstream https://github.com/<your_github_username>/MeTube.git
+    git remote add upstream https://github.com/Open-Source-Chandigarh/MeTube.git
 ```
 5. **Keep your cloned repo up to date by pulling from upstream (this will also avoid any merge conflicts while committing new changes):**
 ```
