@@ -5,6 +5,17 @@ let isCommentVisible = false;
 
 function searchVideos(category = '') {
   const searchInput = document.getElementById('searchInput').value;
+  const videoWrapper = document.getElementById('videoWrapper');
+  const videoSection = document.querySelector('.video-section');
+  const welcomeMessage = document.getElementById('welcomeMessage');
+  
+  // Hide video wrapper and section when searching
+  videoWrapper.classList.remove('show');
+  videoSection.classList.add('no-video');
+  
+  // Hide welcome message when searching
+  welcomeMessage.classList.add('hidden');
+  
   document.getElementById('videoPlayer').src = '';
   document.getElementById('searchResults').innerHTML = '';
   document.getElementById('videoTitle').innerText = ''; // Clear video title
@@ -60,6 +71,13 @@ hideButtons();
 
 function playVideo(videoId) {
   const videoUrl = `https://www.youtube.com/embed/${videoId}`;
+  const videoWrapper = document.getElementById('videoWrapper');
+  const videoSection = document.querySelector('.video-section');
+  
+  // Show the video wrapper and section when a video is selected
+  videoWrapper.classList.add('show');
+  videoSection.classList.remove('no-video');
+  
   document.getElementById('videoPlayer').src = videoUrl;
   updateVideoTitle(videoId); // Update the video title
   updateDescription(videoId); // Update the video description
@@ -177,6 +195,10 @@ function showComments() {
 //adding search functionality by pressing enter key
 document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('searchInput');
+  const videoSection = document.querySelector('.video-section');
+  
+  // Hide video section by default
+  videoSection.classList.add('no-video');
 
   searchInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
@@ -184,3 +206,59 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+// Function to show trending videos when "All" is clicked
+function showTrending() {
+  const videoWrapper = document.getElementById('videoWrapper');
+  const videoSection = document.querySelector('.video-section');
+  const welcomeMessage = document.getElementById('welcomeMessage');
+  
+  // Hide video wrapper and section when showing trending
+  videoWrapper.classList.remove('show');
+  videoSection.classList.add('no-video');
+  
+  // Hide welcome message when searching
+  welcomeMessage.classList.add('hidden');
+  
+  document.getElementById('videoPlayer').src = '';
+  document.getElementById('searchResults').innerHTML = '';
+  document.getElementById('videoTitle').innerText = '';
+  document.getElementById('descriptionContainer').style.display = 'none';
+  document.getElementById('commentContainer').style.display = 'none';
+  hideButtons();
+
+  // Search for trending/popular content
+  const query = 'trending popular videos';
+  
+  // Make API request to search for trending videos
+  fetch(`${SEARCH_ENDPOINT}?part=snippet&maxResults=10&q=${query}&type=video&key=${API_KEY}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.items.length > 0) {
+        // Display search results
+        const resultsContainer = document.getElementById('searchResults');
+        data.items.forEach(item => {
+          const videoId = item.id.videoId;
+          const title = item.snippet.title;
+
+          // Create result item
+          const resultItem = document.createElement('div');
+          resultItem.classList.add('result-item');
+          resultItem.innerHTML = `
+            <img src="${item.snippet.thumbnails.medium.url}" alt="Thumbnail">
+            <p>${title}</p>
+          `;
+          resultItem.addEventListener('click', () => playVideo(videoId));
+          resultsContainer.appendChild(resultItem);
+        });
+      } else {
+        const resultsContainer = document.getElementById('searchResults');
+        resultsContainer.innerHTML = '<p style="text-align: center; margin: 2rem; font-size: 1.2rem; color: #666;">No trending videos found at the moment.</p>';
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching trending videos:', error);
+      const resultsContainer = document.getElementById('searchResults');
+      resultsContainer.innerHTML = '<p style="text-align: center; margin: 2rem; font-size: 1.2rem; color: #666;">Unable to load trending videos.</p>';
+    });
+}
