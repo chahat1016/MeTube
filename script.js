@@ -64,6 +64,14 @@ function playVideo(videoId) {
   updateVideoTitle(videoId); // Update the video title
   updateDescription(videoId); // Update the video description
   showButtons(); // Show buttons when video is selected
+
+  const videoSection = document.querySelector('.video-section');
+  if (videoSection) {
+    videoSection.scrollIntoView({ 
+      behavior: 'smooth', 
+      block: 'start' 
+    });
+  }
 }
 
 
