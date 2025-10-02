@@ -37,16 +37,17 @@
         </button>
     </nav>
 
-    <div id="filterButtons" class="filter-buttons">
-        <button onclick="searchVideos('all')" class="filter-btn">All</button>
-        <button onclick="searchVideos('sports')" class="filter-btn">Sports</button>
-        <button onclick="searchVideos('entertainment')" class="filter-btn">Entertainment</button>
-        <button onclick="searchVideos('music')" class="filter-btn">Music</button>
-        <button onclick="searchVideos('news')" class="filter-btn">News</button>
-        <button onclick="searchVideos('gaming')" class="filter-btn">Gaming</button>
-        <button onclick="searchVideos('comedy')" class="filter-btn">Comedy</button>
-        
-    </div>
+    <div class="main-content">
+        <div id="filterButtons" class="filter-buttons">
+            <button onclick="showTrending()" class="filter-btn">All</button>
+            <button onclick="searchVideos('sports')" class="filter-btn">Sports</button>
+            <button onclick="searchVideos('entertainment')" class="filter-btn">Entertainment</button>
+            <button onclick="searchVideos('music')" class="filter-btn">Music</button>
+            <button onclick="searchVideos('news')" class="filter-btn">News</button>
+            <button onclick="searchVideos('gaming')" class="filter-btn">Gaming</button>
+            <button onclick="searchVideos('comedy')" class="filter-btn">Comedy</button>
+            
+        </div>
 
     <div class="video-section">
         <div class="left-content">
@@ -77,7 +78,17 @@
         </div>
     </div>
 
-    <div id="searchResults" class="search-results"></div>
+        <!-- Welcome message when no search has been performed -->
+        <div id="welcomeMessage" class="welcome-message">
+            <div class="welcome-content">
+                <h2>Welcome to MeTube</h2>
+                <p>Search for your favorite videos using the search bar above or browse by categories!</p>
+                <div class="welcome-icon">🎬</div>
+            </div>
+        </div>
+
+        <div id="searchResults" class="search-results"></div>
+    </div>
 
     <footer style="background-color: #b30b0b; color: #ffffff; padding: 20px 0; text-align: center;">
         <div style="max-width: 1200px; margin: 0 auto;">
