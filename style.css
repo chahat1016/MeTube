@@ -169,6 +169,36 @@ body {
   font-size: 0.9rem;
 }
 
+.show-more-btn {
+  background: none;
+  border: none;
+  color: #667eea;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.5rem 0 0 0;
+  margin-top: 0.5rem;
+  transition: all 0.3s ease;
+  text-decoration: underline;
+}
+
+.show-more-btn:hover {
+  color: #5a67d8;
+  transform: translateY(-1px);
+}
+
+.description-link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.description-link:hover {
+  color: #5a67d8;
+  text-decoration: underline;
+}
+
 .video-comments-section {
   margin-top: 1rem;
 }
@@ -257,11 +287,11 @@ body {
 }
 
 .creator-badge {
-  background: linear-gradient(135deg, #667eea, #764ba2) !important;
+  background: linear-gradient(135deg, #f39c12, #e67e22) !important;
 }
 
 .creator-name {
-  color: #667eea;
+  color: #f39c12;
   font-weight: 700;
 }
 
@@ -589,6 +619,22 @@ footer {
   color: #cccccc;
 }
 
+.dark-mode .show-more-btn {
+  color: #8fa4f3;
+}
+
+.dark-mode .show-more-btn:hover {
+  color: #a5b4f5;
+}
+
+.dark-mode .description-link {
+  color: #8fa4f3;
+}
+
+.dark-mode .description-link:hover {
+  color: #a5b4f5;
+}
+
 /* Dark mode comments styles */
 .dark-mode .video-comments-section .comments-container {
   background: rgba(45, 45, 45, 0.9);
@@ -641,11 +687,11 @@ footer {
 }
 
 .dark-mode .creator-badge {
-  background: linear-gradient(135deg, #667eea, #764ba2) !important;
+  background: linear-gradient(135deg, #f39c12, #e67e22) !important;
 }
 
 .dark-mode .creator-name {
-  color: #8fa4f3;
+  color: #f8c471;
 }
 
 .dark-mode .sidebar-title {

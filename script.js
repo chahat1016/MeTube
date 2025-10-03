@@ -22,6 +22,10 @@ function searchVideos(category = '') {
   document.getElementById('descriptionContainer').style.display = 'none'; // Hide description container
   document.getElementById('commentsContainer').style.display = 'none'; // Hide comments container
   document.getElementById('relatedVideos').innerHTML = ''; // Clear related videos
+  
+  fullDescription = '';
+  isDescriptionExpanded = false;
+  document.getElementById('showMoreBtn').style.display = 'none';
 
   let query = searchInput;
   if (category && category !== 'all') {
@@ -104,6 +108,9 @@ function updateVideoTitle(selectedVideoId) {
 
 
 
+let fullDescription = '';
+let isDescriptionExpanded = false;
+
 function updateDescription(selectedVideoId) {
   fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${selectedVideoId}&key=${API_KEY}`)
     .then(response => response.json())
@@ -112,16 +119,26 @@ function updateDescription(selectedVideoId) {
         const description = data.items[0].snippet.description;
         const descriptionElement = document.getElementById('videoDescription');
         const descriptionContainer = document.getElementById('descriptionContainer');
+        const showMoreBtn = document.getElementById('showMoreBtn');
         
         if (description && description.trim()) {
-          // Truncate description to first 300 characters for better display
-          const truncatedDescription = description.length > 300 
-            ? description.substring(0, 300) + '...' 
-            : description;
-          descriptionElement.textContent = truncatedDescription;
+          fullDescription = description;
+          isDescriptionExpanded = false;
+          
+          if (description.length > 200) {
+            const truncatedDescription = description.substring(0, 200) + '...';
+            descriptionElement.innerHTML = formatDescription(truncatedDescription);
+            showMoreBtn.style.display = 'inline-block';
+            showMoreBtn.textContent = 'Show More';
+          } else {
+            descriptionElement.innerHTML = formatDescription(description);
+            showMoreBtn.style.display = 'none';
+          }
+          
           descriptionContainer.style.display = 'block';
         } else {
           descriptionElement.textContent = 'No description available.';
+          showMoreBtn.style.display = 'none';
           descriptionContainer.style.display = 'block';
         }
       }
@@ -129,8 +146,32 @@ function updateDescription(selectedVideoId) {
     .catch(error => {
       console.error('Error fetching video details:', error);
       const descriptionElement = document.getElementById('videoDescription');
+      const showMoreBtn = document.getElementById('showMoreBtn');
       descriptionElement.textContent = 'Error loading description.';
+      showMoreBtn.style.display = 'none';
     });
+}
+
+function formatDescription(text) {
+  return text
+    .replace(/\n/g, '<br>')
+    .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="description-link">$1</a>');
+}
+
+function toggleDescription() {
+  const descriptionElement = document.getElementById('videoDescription');
+  const showMoreBtn = document.getElementById('showMoreBtn');
+  
+  if (isDescriptionExpanded) {
+    const truncatedDescription = fullDescription.substring(0, 200) + '...';
+    descriptionElement.innerHTML = formatDescription(truncatedDescription);
+    showMoreBtn.textContent = 'Show More';
+    isDescriptionExpanded = false;
+  } else {
+    descriptionElement.innerHTML = formatDescription(fullDescription);
+    showMoreBtn.textContent = 'Show Less';
+    isDescriptionExpanded = true;
+  }
 }
 
 
@@ -366,6 +407,11 @@ function showTrending() {
   document.getElementById('descriptionContainer').style.display = 'none';
   document.getElementById('commentsContainer').style.display = 'none'; // Hide comments container
   document.getElementById('relatedVideos').innerHTML = ''; // Clear related videos
+  
+  // Reset description state
+  fullDescription = '';
+  isDescriptionExpanded = false;
+  document.getElementById('showMoreBtn').style.display = 'none';
 
   // Search for trending/popular content
   const query = 'trending popular videos';
