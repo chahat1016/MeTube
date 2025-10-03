@@ -20,8 +20,12 @@ function searchVideos(category = '') {
   document.getElementById('searchResults').innerHTML = '';
   document.getElementById('videoTitle').innerText = ''; // Clear video title
   document.getElementById('descriptionContainer').style.display = 'none'; // Hide description container
-  document.getElementById('commentContainer').style.display = 'none'; // Hide comment container
-  hideButtons(); // Hide buttons
+  document.getElementById('commentsContainer').style.display = 'none'; // Hide comments container
+  document.getElementById('relatedVideos').innerHTML = ''; // Clear related videos
+  
+  fullDescription = '';
+  isDescriptionExpanded = false;
+  document.getElementById('showMoreBtn').style.display = 'none';
 
   let query = searchInput;
   if (category && category !== 'all') {
@@ -60,15 +64,6 @@ function searchVideos(category = '') {
 }
 
 
-function hideButtons() {
-  const descriptionButton = document.getElementById('toggleDescriptionButton');
-  const commentButton = document.getElementById('toggleCommentButton');
-  descriptionButton.style.display = 'none';
-  commentButton.style.display = 'none';
-}
-
-hideButtons();
-
 function playVideo(videoId) {
   const videoUrl = `https://www.youtube.com/embed/${videoId}`;
   const videoWrapper = document.getElementById('videoWrapper');
@@ -81,9 +76,9 @@ function playVideo(videoId) {
   document.getElementById('videoPlayer').src = videoUrl;
   updateVideoTitle(videoId); // Update the video title
   updateDescription(videoId); // Update the video description
-  showButtons(); // Show buttons when video is selected
+  loadRelatedVideos(videoId); // Load related videos in sidebar
+  loadVideoComments(videoId); // Load video comments
 
-  const videoSection = document.querySelector('.video-section');
   if (videoSection) {
     videoSection.scrollIntoView({ 
       behavior: 'smooth', 
@@ -111,12 +106,10 @@ function updateVideoTitle(selectedVideoId) {
 }
 
 
-function showButtons() {
-  const descriptionButton = document.getElementById('toggleDescriptionButton');
-  const commentButton = document.getElementById('toggleCommentButton');
-  descriptionButton.style.display = 'block';
-  commentButton.style.display = 'block';
-}
+
+
+let fullDescription = '';
+let isDescriptionExpanded = false;
 
 function updateDescription(selectedVideoId) {
   fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${selectedVideoId}&key=${API_KEY}`)
@@ -124,34 +117,65 @@ function updateDescription(selectedVideoId) {
     .then(data => {
       if (data.items.length > 0) {
         const description = data.items[0].snippet.description;
+        const descriptionElement = document.getElementById('videoDescription');
         const descriptionContainer = document.getElementById('descriptionContainer');
-        if (description) {
-          descriptionContainer.innerHTML = `<h3>Description Box:</h3><p>${description}</p>`;
-          descriptionContainer.style.display = 'block'; // Display description container
+        const showMoreBtn = document.getElementById('showMoreBtn');
+        
+        if (description && description.trim()) {
+          fullDescription = description;
+          isDescriptionExpanded = false;
+          
+          if (description.length > 200) {
+            const truncatedDescription = description.substring(0, 200) + '...';
+            descriptionElement.innerHTML = formatDescription(truncatedDescription);
+            showMoreBtn.style.display = 'inline-block';
+            showMoreBtn.textContent = 'Show More';
+          } else {
+            descriptionElement.innerHTML = formatDescription(description);
+            showMoreBtn.style.display = 'none';
+          }
+          
+          descriptionContainer.style.display = 'block';
         } else {
-          descriptionContainer.innerHTML = '<p>No description available.</p>';
-          descriptionContainer.style.display = 'none'; // Hide description container if no description
+          descriptionElement.textContent = 'No description available.';
+          showMoreBtn.style.display = 'none';
+          descriptionContainer.style.display = 'block';
         }
       }
     })
     .catch(error => {
       console.error('Error fetching video details:', error);
-      alert('An error occurred while fetching video details.');
+      const descriptionElement = document.getElementById('videoDescription');
+      const showMoreBtn = document.getElementById('showMoreBtn');
+      descriptionElement.textContent = 'Error loading description.';
+      showMoreBtn.style.display = 'none';
     });
 }
 
+function formatDescription(text) {
+  return text
+    .replace(/\n/g, '<br>')
+    .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="description-link">$1</a>');
+}
 
 function toggleDescription() {
-  const descriptionElement = document.getElementById('descriptionContainer');
-  isDescriptionVisible = !isDescriptionVisible;
-  descriptionElement.style.display = isDescriptionVisible ? 'block' : 'none';
+  const descriptionElement = document.getElementById('videoDescription');
+  const showMoreBtn = document.getElementById('showMoreBtn');
+  
+  if (isDescriptionExpanded) {
+    const truncatedDescription = fullDescription.substring(0, 200) + '...';
+    descriptionElement.innerHTML = formatDescription(truncatedDescription);
+    showMoreBtn.textContent = 'Show More';
+    isDescriptionExpanded = false;
+  } else {
+    descriptionElement.innerHTML = formatDescription(fullDescription);
+    showMoreBtn.textContent = 'Show Less';
+    isDescriptionExpanded = true;
+  }
 }
 
-function toggleComments() {
-  const commentContainer = document.getElementById('commentContainer');
-  isCommentVisible = !isCommentVisible;
-  commentContainer.style.display = isCommentVisible ? 'block' : 'none';
-}
+
+
 
 function toggleDarkMode() {
   const body = document.body;
@@ -161,43 +185,192 @@ function toggleDarkMode() {
 }
 
 
-function getVideoIdFromPlayer() {
-  const videoPlayer = document.getElementById('videoPlayer');
-  const videoUrl = videoPlayer.src;
-  const videoId = videoUrl.split('/').pop();
-  return videoId;
-}
 
-function displayComments(videoId) {
-  fetch(`https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&key=${API_KEY}`)
+
+// Function to load related videos in sidebar
+function loadRelatedVideos(videoId) {
+  // Get video details to extract tags/category for better related video search
+  fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${API_KEY}`)
     .then(response => response.json())
     .then(data => {
-      const firstComment = data.items[0];
-      const commentContainer = document.getElementById('commentContainer');
-      if (firstComment) {
-        const commentText = firstComment.snippet.topLevelComment.snippet.textDisplay;
-        commentContainer.innerHTML = `<h3>Pinned Comment:</h3><p>${commentText}</p>`;
-        commentContainer.style.display = 'block';
-      } else {
-        commentContainer.innerHTML = '<p>No comments found.</p>';
-        commentContainer.style.display = 'none';
+      if (data.items.length > 0) {
+        const videoTags = data.items[0].snippet.tags;
+        const videoTitle = data.items[0].snippet.title;
+        
+        // Use tags or title keywords to search for related videos
+        let searchQuery = '';
+        if (videoTags && videoTags.length > 0) {
+          searchQuery = videoTags.slice(0, 3).join(' ');
+        } else {
+          // Extract first few words from title as search query
+          searchQuery = videoTitle.split(' ').slice(0, 3).join(' ');
+        }
+        
+        // Search for related videos
+        fetch(`${SEARCH_ENDPOINT}?part=snippet&maxResults=8&q=${encodeURIComponent(searchQuery)}&type=video&key=${API_KEY}`)
+          .then(response => response.json())
+          .then(relatedData => {
+            displayRelatedVideos(relatedData.items.filter(item => item.id.videoId !== videoId));
+          })
+          .catch(error => {
+            console.error('Error fetching related videos:', error);
+          });
       }
     })
     .catch(error => {
-      console.error('Error fetching comments:', error);
-      alert('An error occurred while fetching comments.');
+      console.error('Error fetching video details for related search:', error);
     });
 }
 
-function showComments() {
-  const commentContainer = document.getElementById('commentContainer');
-  if (commentContainer.style.display === 'block') {
-    commentContainer.style.display = 'none';
-  } else {
-    const videoId = getVideoIdFromPlayer();
-    displayComments(videoId);
-    commentContainer.style.display = 'block';
+// Function to display related videos in sidebar
+function displayRelatedVideos(videos) {
+  const relatedVideosContainer = document.getElementById('relatedVideos');
+  relatedVideosContainer.innerHTML = '';
+  
+  videos.slice(0, 6).forEach(video => {
+    const videoItem = document.createElement('div');
+    videoItem.classList.add('related-video-item');
+    videoItem.innerHTML = `
+      <img src="${video.snippet.thumbnails.medium.url}" alt="${video.snippet.title}" class="related-video-thumbnail">
+      <div class="related-video-info">
+        <p class="related-video-title">${video.snippet.title}</p>
+        <p class="related-video-channel">${video.snippet.channelTitle}</p>
+      </div>
+    `;
+    
+    videoItem.addEventListener('click', () => {
+      playVideo(video.id.videoId);
+    });
+    
+    relatedVideosContainer.appendChild(videoItem);
+  });
+}
+
+function loadVideoComments(videoId) {
+  const commentsContainer = document.getElementById('commentsContainer');
+  const commentsLoading = document.getElementById('commentsLoading');
+  const commentsList = document.getElementById('commentsList');
+  
+  commentsContainer.style.display = 'block';
+  commentsLoading.style.display = 'block';
+  commentsList.innerHTML = '';
+  
+  fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${API_KEY}`)
+    .then(response => response.json())
+    .then(videoData => {
+      const channelId = videoData.items[0]?.snippet?.channelId;
+      
+      fetch(`https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&maxResults=15&order=relevance&key=${API_KEY}`)
+        .then(response => response.json())
+        .then(data => {
+          commentsLoading.style.display = 'none';
+          
+          if (data.items && data.items.length > 0) {
+            displayComments(data.items, channelId);
+          } else {
+            commentsList.innerHTML = '<p style="text-align: center; color: #888; font-style: italic;">No comments available for this video.</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching comments:', error);
+          commentsLoading.style.display = 'none';
+          commentsList.innerHTML = '<p style="text-align: center; color: #ff4757; font-style: italic;">Comments are disabled for this video or could not be loaded.</p>';
+        });
+    })
+    .catch(error => {
+      console.error('Error fetching video details:', error);
+      commentsLoading.style.display = 'none';
+      commentsList.innerHTML = '<p style="text-align: center; color: #ff4757; font-style: italic;">Could not load comments.</p>';
+    });
+}
+
+function displayComments(comments, videoChannelId) {
+  const commentsList = document.getElementById('commentsList');
+  
+  const pinnedComments = [];
+  const regularComments = [];
+  
+  comments.forEach(commentThread => {
+    const comment = commentThread.snippet.topLevelComment.snippet;
+    
+    const isChannelOwner = comment.authorChannelId && 
+                          comment.authorChannelId.value === videoChannelId;
+    
+    const hasHighEngagement = comment.likeCount > 100; // High like count might indicate importance
+    
+    const containsPinnedKeywords = comment.textDisplay.toLowerCase().includes('pinned') ||
+                                  comment.textDisplay.toLowerCase().includes('pin') ||
+                                  comment.textDisplay.toLowerCase().includes('heart');
+    
+    const isPinned = isChannelOwner || 
+                    (hasHighEngagement && pinnedComments.length === 0) ||
+                    containsPinnedKeywords;
+    
+    if (isPinned && pinnedComments.length < 2) { // Limit to max 2 pinned comments
+      pinnedComments.push({...commentThread, isChannelOwner});
+    } else {
+      regularComments.push(commentThread);
+    }
+  });
+  
+  pinnedComments.forEach(commentThread => {
+    const comment = commentThread.snippet.topLevelComment.snippet;
+    createCommentElement(comment, true, commentsList, commentThread.isChannelOwner);
+  });
+  
+  regularComments.slice(0, 8).forEach(commentThread => {
+    const comment = commentThread.snippet.topLevelComment.snippet;
+    createCommentElement(comment, false, commentsList, false);
+  });
+}
+
+function createCommentElement(comment, isPinned, container, isChannelOwner = false) {
+  const commentItem = document.createElement('div');
+  commentItem.classList.add('comment-item');
+  if (isPinned) {
+    commentItem.classList.add('pinned-comment');
   }
+  
+  const publishDate = new Date(comment.publishedAt).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+  
+  const maxLength = isPinned ? 300 : 200;
+  const commentText = comment.textDisplay.length > maxLength 
+    ? comment.textDisplay.substring(0, maxLength) + '...' 
+    : comment.textDisplay;
+  
+  let badge = '';
+  if (isPinned) {
+    if (isChannelOwner) {
+      badge = '<span class="pinned-badge creator-badge">Creator</span>';
+    } else {
+      badge = '<span class="pinned-badge">Pinned</span>';
+    }
+  }
+  
+  const authorName = isChannelOwner ? 
+    `<span class="creator-name">${comment.authorDisplayName}</span>` : 
+    comment.authorDisplayName;
+  
+  commentItem.innerHTML = `
+    <div class="comment-header">
+      <p class="comment-author">${authorName}</p>
+      ${badge}
+    </div>
+    <p class="comment-text">${commentText}</p>
+    <div class="comment-meta">
+      <span class="comment-date">${publishDate}</span>
+      <span class="comment-likes">
+        <span>👍</span>
+        <span>${comment.likeCount || 0}</span>
+      </span>
+    </div>
+  `;
+  
+  container.appendChild(commentItem);
 }
 
 //adding search functionality by pressing enter key
@@ -232,8 +405,13 @@ function showTrending() {
   document.getElementById('searchResults').innerHTML = '';
   document.getElementById('videoTitle').innerText = '';
   document.getElementById('descriptionContainer').style.display = 'none';
-  document.getElementById('commentContainer').style.display = 'none';
-  hideButtons();
+  document.getElementById('commentsContainer').style.display = 'none'; // Hide comments container
+  document.getElementById('relatedVideos').innerHTML = ''; // Clear related videos
+  
+  // Reset description state
+  fullDescription = '';
+  isDescriptionExpanded = false;
+  document.getElementById('showMoreBtn').style.display = 'none';
 
   // Search for trending/popular content
   const query = 'trending popular videos';
