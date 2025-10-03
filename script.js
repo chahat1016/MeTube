@@ -1,4 +1,4 @@
-const API_KEY = 'AIzaSyCQqvQhNs-lX7KoUCErol_05C5pM15YCRQ';
+const API_KEY = 'AIzaSyDk54A2p_x_Q8_e7yB45jquybwuw7os6ek';
 const SEARCH_ENDPOINT = 'https://www.googleapis.com/youtube/v3/search';
 let isDescriptionVisible = true;
 let isCommentVisible = false;
@@ -20,6 +20,7 @@ function searchVideos(category = '') {
   document.getElementById('searchResults').innerHTML = '';
   document.getElementById('videoTitle').innerText = ''; // Clear video title
   document.getElementById('descriptionContainer').style.display = 'none'; // Hide description container
+  document.getElementById('commentsContainer').style.display = 'none'; // Hide comments container
   document.getElementById('relatedVideos').innerHTML = ''; // Clear related videos
 
   let query = searchInput;
@@ -72,6 +73,7 @@ function playVideo(videoId) {
   updateVideoTitle(videoId); // Update the video title
   updateDescription(videoId); // Update the video description
   loadRelatedVideos(videoId); // Load related videos in sidebar
+  loadVideoComments(videoId); // Load video comments
 
   if (videoSection) {
     videoSection.scrollIntoView({ 
@@ -203,6 +205,133 @@ function displayRelatedVideos(videos) {
   });
 }
 
+function loadVideoComments(videoId) {
+  const commentsContainer = document.getElementById('commentsContainer');
+  const commentsLoading = document.getElementById('commentsLoading');
+  const commentsList = document.getElementById('commentsList');
+  
+  commentsContainer.style.display = 'block';
+  commentsLoading.style.display = 'block';
+  commentsList.innerHTML = '';
+  
+  fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${API_KEY}`)
+    .then(response => response.json())
+    .then(videoData => {
+      const channelId = videoData.items[0]?.snippet?.channelId;
+      
+      fetch(`https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&maxResults=15&order=relevance&key=${API_KEY}`)
+        .then(response => response.json())
+        .then(data => {
+          commentsLoading.style.display = 'none';
+          
+          if (data.items && data.items.length > 0) {
+            displayComments(data.items, channelId);
+          } else {
+            commentsList.innerHTML = '<p style="text-align: center; color: #888; font-style: italic;">No comments available for this video.</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching comments:', error);
+          commentsLoading.style.display = 'none';
+          commentsList.innerHTML = '<p style="text-align: center; color: #ff4757; font-style: italic;">Comments are disabled for this video or could not be loaded.</p>';
+        });
+    })
+    .catch(error => {
+      console.error('Error fetching video details:', error);
+      commentsLoading.style.display = 'none';
+      commentsList.innerHTML = '<p style="text-align: center; color: #ff4757; font-style: italic;">Could not load comments.</p>';
+    });
+}
+
+function displayComments(comments, videoChannelId) {
+  const commentsList = document.getElementById('commentsList');
+  
+  const pinnedComments = [];
+  const regularComments = [];
+  
+  comments.forEach(commentThread => {
+    const comment = commentThread.snippet.topLevelComment.snippet;
+    
+    const isChannelOwner = comment.authorChannelId && 
+                          comment.authorChannelId.value === videoChannelId;
+    
+    const hasHighEngagement = comment.likeCount > 100; // High like count might indicate importance
+    
+    const containsPinnedKeywords = comment.textDisplay.toLowerCase().includes('pinned') ||
+                                  comment.textDisplay.toLowerCase().includes('pin') ||
+                                  comment.textDisplay.toLowerCase().includes('heart');
+    
+    const isPinned = isChannelOwner || 
+                    (hasHighEngagement && pinnedComments.length === 0) ||
+                    containsPinnedKeywords;
+    
+    if (isPinned && pinnedComments.length < 2) { // Limit to max 2 pinned comments
+      pinnedComments.push({...commentThread, isChannelOwner});
+    } else {
+      regularComments.push(commentThread);
+    }
+  });
+  
+  pinnedComments.forEach(commentThread => {
+    const comment = commentThread.snippet.topLevelComment.snippet;
+    createCommentElement(comment, true, commentsList, commentThread.isChannelOwner);
+  });
+  
+  regularComments.slice(0, 8).forEach(commentThread => {
+    const comment = commentThread.snippet.topLevelComment.snippet;
+    createCommentElement(comment, false, commentsList, false);
+  });
+}
+
+function createCommentElement(comment, isPinned, container, isChannelOwner = false) {
+  const commentItem = document.createElement('div');
+  commentItem.classList.add('comment-item');
+  if (isPinned) {
+    commentItem.classList.add('pinned-comment');
+  }
+  
+  const publishDate = new Date(comment.publishedAt).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+  
+  const maxLength = isPinned ? 300 : 200;
+  const commentText = comment.textDisplay.length > maxLength 
+    ? comment.textDisplay.substring(0, maxLength) + '...' 
+    : comment.textDisplay;
+  
+  let badge = '';
+  if (isPinned) {
+    if (isChannelOwner) {
+      badge = '<span class="pinned-badge creator-badge">Creator</span>';
+    } else {
+      badge = '<span class="pinned-badge">Pinned</span>';
+    }
+  }
+  
+  const authorName = isChannelOwner ? 
+    `<span class="creator-name">${comment.authorDisplayName}</span>` : 
+    comment.authorDisplayName;
+  
+  commentItem.innerHTML = `
+    <div class="comment-header">
+      <p class="comment-author">${authorName}</p>
+      ${badge}
+    </div>
+    <p class="comment-text">${commentText}</p>
+    <div class="comment-meta">
+      <span class="comment-date">${publishDate}</span>
+      <span class="comment-likes">
+        <span>👍</span>
+        <span>${comment.likeCount || 0}</span>
+      </span>
+    </div>
+  `;
+  
+  container.appendChild(commentItem);
+}
+
 //adding search functionality by pressing enter key
 document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('searchInput');
@@ -235,6 +364,7 @@ function showTrending() {
   document.getElementById('searchResults').innerHTML = '';
   document.getElementById('videoTitle').innerText = '';
   document.getElementById('descriptionContainer').style.display = 'none';
+  document.getElementById('commentsContainer').style.display = 'none'; // Hide comments container
   document.getElementById('relatedVideos').innerHTML = ''; // Clear related videos
 
   // Search for trending/popular content

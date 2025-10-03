@@ -169,7 +169,122 @@ body {
   font-size: 0.9rem;
 }
 
+.video-comments-section {
+  margin-top: 1rem;
+}
 
+.video-comments-section .comments-container {
+  background: rgba(248, 249, 250, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  backdrop-filter: blur(10px);
+}
+
+.video-comments-section .comments-container h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.comments-loading {
+  text-align: center;
+  padding: 1rem;
+  color: #606060;
+  font-style: italic;
+}
+
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.comment-item {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  padding: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.comment-item:hover {
+  background: rgba(255, 255, 255, 0.8);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Pinned comment styles */
+.pinned-comment {
+  background: linear-gradient(135deg, rgba(255, 71, 87, 0.1), rgba(255, 71, 87, 0.05));
+  border: 1px solid rgba(255, 71, 87, 0.2);
+  box-shadow: 0 2px 10px rgba(255, 71, 87, 0.1);
+}
+
+.pinned-comment:hover {
+  background: linear-gradient(135deg, rgba(255, 71, 87, 0.15), rgba(255, 71, 87, 0.08));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 71, 87, 0.2);
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.comment-author {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.pinned-badge {
+  background: linear-gradient(135deg, #ff4757, #ff3742);
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.creator-badge {
+  background: linear-gradient(135deg, #667eea, #764ba2) !important;
+}
+
+.creator-name {
+  color: #667eea;
+  font-weight: 700;
+}
+
+.comment-text {
+  margin: 0;
+  line-height: 1.4;
+  color: #333;
+  font-size: 0.85rem;
+}
+
+.comment-meta {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #888;
+  display: flex;
+  gap: 1rem;
+}
+
+.comment-likes {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
 
 .dark-mode #videoTitle {
   color: #ffffff;
@@ -472,6 +587,65 @@ footer {
 
 .dark-mode .video-description-section .description-container p {
   color: #cccccc;
+}
+
+/* Dark mode comments styles */
+.dark-mode .video-comments-section .comments-container {
+  background: rgba(45, 45, 45, 0.9);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.dark-mode .video-comments-section .comments-container h3 {
+  color: #ffffff;
+}
+
+.dark-mode .comments-loading {
+  color: #aaaaaa;
+}
+
+.dark-mode .comment-item {
+  background: rgba(60, 60, 60, 0.6);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .comment-item:hover {
+  background: rgba(70, 70, 70, 0.8);
+}
+
+.dark-mode .comment-author {
+  color: #ffffff;
+}
+
+.dark-mode .comment-text {
+  color: #cccccc;
+}
+
+.dark-mode .comment-meta {
+  color: #aaaaaa;
+}
+
+/* Dark mode pinned comment styles */
+.dark-mode .pinned-comment {
+  background: linear-gradient(135deg, rgba(255, 71, 87, 0.2), rgba(255, 71, 87, 0.1));
+  border-color: rgba(255, 71, 87, 0.3);
+}
+
+.dark-mode .pinned-comment:hover {
+  background: linear-gradient(135deg, rgba(255, 71, 87, 0.25), rgba(255, 71, 87, 0.15));
+}
+
+.dark-mode .pinned-badge {
+  background: linear-gradient(135deg, #ff4757, #ff3742);
+  color: white;
+}
+
+.dark-mode .creator-badge {
+  background: linear-gradient(135deg, #667eea, #764ba2) !important;
+}
+
+.dark-mode .creator-name {
+  color: #8fa4f3;
 }
 
 .dark-mode .sidebar-title {
