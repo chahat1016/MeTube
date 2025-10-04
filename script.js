@@ -398,6 +398,25 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+function handleSubscribe(event) {
+  if (event) event.preventDefault();
+  const emailInput = document.getElementById('newsletterEmail');
+  const msg = document.getElementById('newsletterMsg');
+  const email = emailInput && emailInput.value ? emailInput.value.trim() : '';
+
+  const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\\.,;:\s@\"]+\.)+[^<>()[\]\\.,;:\s@\"]{2,})$/i;
+  if (!email || !re.test(email)) {
+    msg.textContent = 'Please enter a valid email address.';
+    msg.style.color = '#d9534f';
+    return false;
+  }
+
+  msg.textContent = 'Thanks for subscribing! Check your inbox for updates.';
+  msg.style.color = '#2a7a2a';
+  emailInput.value = '';
+  return false;
+}
+
 // Function to show trending videos when "All" is clicked
 function showTrending() {
   const videoWrapper = document.getElementById('videoWrapper');
