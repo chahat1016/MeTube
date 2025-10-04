@@ -655,9 +655,10 @@ body {
 
 .dark-mode .footer-tag,
 .dark-mode .footer-bottom {
-  color: #fff;
+  color: #fff; /* make footer descriptive text fully white in dark mode for contrast */
 }
 
+/* Ensure footer columns/links are white in dark mode for readability */
 .dark-mode .site-footer,
 .dark-mode .footer-column h4,
 .dark-mode .footer-column a,
@@ -665,17 +666,16 @@ body {
 .dark-mode .footer-tag {
   color: #ffffff;
 }
-
 .dark-mode .footer-column a {
   color: #ffffff;
 }
-
 .dark-mode .footer-column a:hover {
   color: #ffd6d6;
 }
 
+/* Comments: differentiate link colors and timestamp links */
 .comment-text a {
-  color: #2563eb;
+  color: #2563eb; /* bright blue links in comments */
   text-decoration: underline;
 }
 .comment-text a:hover {
@@ -683,31 +683,29 @@ body {
 }
 
 .timestamp-link {
-  color: #ff6b3d;
+  color: #ff6b3d; /* warm accent for timestamps */
   font-weight: 600;
   text-decoration: none;
 }
-
 .timestamp-link:hover {
   color: #ff8a66;
   text-decoration: underline;
 }
 
+/* Dark mode variants for comment links */
 .dark-mode .comment-text a {
-  color: #93c5fd;
+  color: #93c5fd; /* lighter blue for dark backgrounds */
 }
-
 .dark-mode .comment-text a:hover {
   color: #60a5fa;
 }
-
 .dark-mode .timestamp-link {
-  color: #ffb38a;
+  color: #ffb38a; /* warm timestamp color in dark mode */
 }
-
 .dark-mode .timestamp-link:hover {
   color: #ffcfb8;
 }
+
 
 /* Main content wrapper */
 .main-content {
