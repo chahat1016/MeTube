@@ -33,26 +33,33 @@ function searchVideos(category = '') {
   }
 
   // Make API request to search for videos
-  fetch(`${SEARCH_ENDPOINT}?part=snippet&maxResults=10&q=${query}&type=video&key=${API_KEY}`)
+  fetch(`${SEARCH_ENDPOINT}?part=snippet&maxResults=15&q=${query}&type=video&key=${API_KEY}`)
     .then(response => response.json())
     .then(data => {
       if (data.items.length > 0) {
-        // Display search results
-        const resultsContainer = document.getElementById('searchResults');
-        data.items.forEach(item => {
-          const videoId = item.id.videoId;
-          const title = item.snippet.title;
-
-          // Create result item
-          const resultItem = document.createElement('div');
-          resultItem.classList.add('result-item');
-          resultItem.innerHTML = `
-            <img src="${item.snippet.thumbnails.medium.url}" alt="Thumbnail">
-            <p>${title}</p>
-          `;
-          resultItem.addEventListener('click', () => playVideo(videoId));
-          resultsContainer.appendChild(resultItem);
+        const videoResults = data.items.filter(item => {
+          return item.id && item.id.videoId && item.id.kind === 'youtube#video';
         });
+        
+        if (videoResults.length > 0) {
+          // Display search results
+          const resultsContainer = document.getElementById('searchResults');
+          videoResults.slice(0, 10).forEach(item => {
+            const videoId = item.id.videoId;
+            const title = item.snippet.title;
+
+            const resultItem = document.createElement('div');
+            resultItem.classList.add('result-item');
+            resultItem.innerHTML = `
+              <img src="${item.snippet.thumbnails.medium.url}" alt="Thumbnail">
+              <p>${title}</p>
+            `;
+            resultItem.addEventListener('click', () => playVideo(videoId));
+            resultsContainer.appendChild(resultItem);
+          });
+        } else {
+          document.getElementById('searchResults').innerHTML = '<p style="text-align: center; margin: 2rem; font-size: 1.2rem; color: #666;">No videos found for your search.</p>';
+        }
       } else {
         alert('No videos found.');
       }
@@ -207,10 +214,13 @@ function loadRelatedVideos(videoId) {
         }
         
         // Search for related videos
-        fetch(`${SEARCH_ENDPOINT}?part=snippet&maxResults=8&q=${encodeURIComponent(searchQuery)}&type=video&key=${API_KEY}`)
+        fetch(`${SEARCH_ENDPOINT}?part=snippet&maxResults=12&q=${encodeURIComponent(searchQuery)}&type=video&key=${API_KEY}`)
           .then(response => response.json())
           .then(relatedData => {
-            displayRelatedVideos(relatedData.items.filter(item => item.id.videoId !== videoId));
+            const filteredVideos = relatedData.items.filter(item => {
+              return item.id && item.id.videoId && item.id.kind === 'youtube#video' && item.id.videoId !== videoId;
+            });
+            displayRelatedVideos(filteredVideos);
           })
           .catch(error => {
             console.error('Error fetching related videos:', error);
@@ -417,26 +427,34 @@ function showTrending() {
   const query = 'trending popular videos';
   
   // Make API request to search for trending videos
-  fetch(`${SEARCH_ENDPOINT}?part=snippet&maxResults=10&q=${query}&type=video&key=${API_KEY}`)
+  fetch(`${SEARCH_ENDPOINT}?part=snippet&maxResults=15&q=${query}&type=video&key=${API_KEY}`)
     .then(response => response.json())
     .then(data => {
       if (data.items.length > 0) {
-        // Display search results
-        const resultsContainer = document.getElementById('searchResults');
-        data.items.forEach(item => {
-          const videoId = item.id.videoId;
-          const title = item.snippet.title;
-
-          // Create result item
-          const resultItem = document.createElement('div');
-          resultItem.classList.add('result-item');
-          resultItem.innerHTML = `
-            <img src="${item.snippet.thumbnails.medium.url}" alt="Thumbnail">
-            <p>${title}</p>
-          `;
-          resultItem.addEventListener('click', () => playVideo(videoId));
-          resultsContainer.appendChild(resultItem);
+        const videoResults = data.items.filter(item => {
+          return item.id && item.id.videoId && item.id.kind === 'youtube#video';
         });
+        
+        if (videoResults.length > 0) {
+          // Display search results
+          const resultsContainer = document.getElementById('searchResults');
+          videoResults.slice(0, 10).forEach(item => {
+            const videoId = item.id.videoId;
+            const title = item.snippet.title;
+
+            const resultItem = document.createElement('div');
+            resultItem.classList.add('result-item');
+            resultItem.innerHTML = `
+              <img src="${item.snippet.thumbnails.medium.url}" alt="Thumbnail">
+              <p>${title}</p>
+            `;
+            resultItem.addEventListener('click', () => playVideo(videoId));
+            resultsContainer.appendChild(resultItem);
+          });
+        } else {
+          const resultsContainer = document.getElementById('searchResults');
+          resultsContainer.innerHTML = '<p style="text-align: center; margin: 2rem; font-size: 1.2rem; color: #666;">No videos found at the moment.</p>';
+        }
       } else {
         const resultsContainer = document.getElementById('searchResults');
         resultsContainer.innerHTML = '<p style="text-align: center; margin: 2rem; font-size: 1.2rem; color: #666;">No trending videos found at the moment.</p>';
