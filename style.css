@@ -4,7 +4,7 @@ body {
   font-family: "Poppins", sans-serif;
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: #f8fafc;
   min-height: 100vh;
   color: #333;
   overflow-x: hidden;
@@ -1074,7 +1074,7 @@ body {
   scrollbar-width: none;
   max-width: 100%;
   margin: 0 auto;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: #f8fafc;
 }
 
 .filter-buttons::-webkit-scrollbar {
@@ -1082,39 +1082,62 @@ body {
 }
 
 .filter-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: 25px;
+  background: #ffffff;
+  color: #596980;
+  border: 2px solid #6d819c;
+  padding: 8px 14px;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 999px;
   cursor: pointer;
   transition: all 0.3s ease;
   flex-shrink: 0;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
 .filter-btn:hover {
+  color: #ff4757;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .filter-btn:active {
   transform: translateY(0);
 }
 
+/* active/selected state (apply .active on the button via JS) */
+.filter-btn.active {
+  background: linear-gradient(90deg, #ff0000, #e60000);
+  color: #fff !important;
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+}
+
+/* dark mode adjustments */
 .dark-mode .filter-buttons {
-  background: linear-gradient(135deg, #232526 0%, #414345 100%);
+  background: transparent;
 }
 
 .dark-mode .filter-btn {
-  background: linear-gradient(135deg, #ff4757 0%, #ff3742 100%);
-  box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+  color: #cbd5e1;
+  background: #475569;
+  border-color: #64748b;
 }
 
 .dark-mode .filter-btn:hover {
-  box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
+  color: #fff;
+  background: #64748b;
+  border-color: #94a3b8;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+
+.dark-mode .filter-btn.active {
+  background: linear-gradient(90deg, #ff4444, #ff3333);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 8px 26px rgba(255, 0, 0, 0.3);
 }
 
 .dark-mode .footer-social a[aria-label="Twitter"] img {
@@ -1174,3 +1197,4 @@ body {
     background: linear-gradient(135deg, #667eea, #764ba2);
     box-shadow: 0 8px 15px rgba(102, 126, 234, 0.3);
 }
+
