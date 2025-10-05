@@ -32,6 +32,45 @@ function searchVideos(category = '') {
     query = category; // Override the search query if a category is selected
   }
 
+  // Attempt to serve from sessionStorage cache first (5-minute TTL)
+  try {
+    const key = 'metube:search:' + encodeURIComponent((query || '').trim().toLowerCase());
+    const raw = sessionStorage.getItem(key);
+    if (raw) {
+      const cached = JSON.parse(raw);
+      const SEARCH_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+      if (cached && typeof cached.ts === 'number' && Array.isArray(cached.data)) {
+        if ((Date.now() - cached.ts) < SEARCH_CACHE_TTL_MS) {
+          const videoResults = cached.data;
+          if (videoResults.length > 0) {
+            const resultsContainer = document.getElementById('searchResults');
+            videoResults.slice(0, 10).forEach(item => {
+              const videoId = item.id.videoId;
+              const title = item.snippet.title;
+  
+              const resultItem = document.createElement('div');
+              resultItem.classList.add('result-item');
+              resultItem.innerHTML = `
+                <img src="${item.snippet.thumbnails.medium.url}" alt="Thumbnail">
+                <p>${title}</p>
+              `;
+              resultItem.addEventListener('click', () => playVideo(videoId));
+              resultsContainer.appendChild(resultItem);
+            });
+          } else {
+            document.getElementById('searchResults').innerHTML = '<p style="text-align: center; margin: 2rem; font-size: 1.2rem; color: #666;">No videos found for your search.</p>';
+          }
+          return; // Served from cache; skip network
+        } else {
+          // Expired cache; clean up
+          sessionStorage.removeItem(key);
+        }
+      }
+    }
+  } catch (e) {
+    // Ignore cache errors (e.g., storage disabled)
+  }
+
   // Make API request to search for videos
   fetch(`${SEARCH_ENDPOINT}?part=snippet&maxResults=15&q=${query}&type=video&key=${API_KEY}`)
     .then(response => response.json())
@@ -40,6 +79,14 @@ function searchVideos(category = '') {
         const videoResults = data.items.filter(item => {
           return item.id && item.id.videoId && item.id.kind === 'youtube#video';
         });
+        
+        // Store results in cache (even if empty array) with timestamp
+        try {
+          const key = 'metube:search:' + encodeURIComponent((query || '').trim().toLowerCase());
+          sessionStorage.setItem(key, JSON.stringify({ ts: Date.now(), data: videoResults }));
+        } catch (e) {
+          // Ignore quota or serialization errors
+        }
         
         if (videoResults.length > 0) {
           // Display search results
