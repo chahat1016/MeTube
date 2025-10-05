@@ -30,8 +30,15 @@
         <img src="./pics/metubeLogo.png" style="height: 80px;">
 
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search videos, channels, or keywords" aria-label="Search videos">
-            <button id="searchButton" onclick="searchVideos()">Search</button>
+            <div class="search-input-wrapper">
+                <input type="text" id="searchInput" placeholder="Search videos, channels, or keywords" aria-label="Search videos">
+                <button id="voiceSearchButton" onclick="startVoiceSearch()" title="Search with your voice" aria-label="Voice search">
+                    <span class="material-symbols-outlined">mic</span>
+                </button>
+            </div>
+            <button id="searchButton" onclick="searchVideos()">
+                <span class="material-symbols-outlined">search</span>
+            </button>
         </div>
         <button id="toggleDarkModeButton" onclick="toggleDarkMode()">
             <span id="darkModeIcon" class="material-symbols-outlined">dark_mode</span>
@@ -158,6 +165,19 @@
                 if (el) el.textContent = y;
             });
         </script>
+
+        <!-- Voice Search Modal -->
+        <div id="voiceSearchModal" class="voice-search-modal">
+            <div class="voice-search-content">
+                <div class="voice-mic-icon">
+                    <span class="material-symbols-outlined">mic</span>
+                </div>
+                <div class="voice-status-text" id="voiceStatusText">Listening...</div>
+                <div class="voice-transcript" id="voiceTranscript">Say something...</div>
+                <button class="voice-close-btn" onclick="stopVoiceSearch()">Cancel</button>
+            </div>
+        </div>
+
         <script src="script.js"></script>
 </body>
 

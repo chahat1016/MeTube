@@ -502,3 +502,191 @@ window.onscroll = function () {
 scrollTopBtn.addEventListener("click", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
 });
+
+// Voice Search Functionality
+let recognition = null;
+let isListening = false;
+
+function initializeSpeechRecognition() {
+  // Check if browser supports Speech Recognition
+  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SpeechRecognition();
+    
+    // Configure speech recognition
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
+    
+    // Event listeners for speech recognition
+    recognition.onstart = function() {
+      console.log('Voice recognition started');
+      isListening = true;
+      updateVoiceSearchUI('listening');
+    };
+    
+    recognition.onresult = function(event) {
+      let transcript = '';
+      let isFinal = false;
+      
+      // Get the transcript from the speech recognition results
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        transcript += event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          isFinal = true;
+        }
+      }
+      
+      // Update the transcript display
+      document.getElementById('voiceTranscript').textContent = transcript || 'Say something...';
+      
+      // If final result, perform search
+      if (isFinal && transcript.trim()) {
+        console.log('Final transcript:', transcript);
+        performVoiceSearch(transcript.trim());
+      }
+    };
+    
+    recognition.onerror = function(event) {
+      console.error('Speech recognition error:', event.error);
+      updateVoiceSearchUI('error');
+      
+      // Handle different error types
+      let errorMessage = 'Voice search failed. Please try again.';
+      switch(event.error) {
+        case 'no-speech':
+          errorMessage = 'No speech was detected. Please try again.';
+          break;
+        case 'audio-capture':
+          errorMessage = 'Microphone not accessible. Please check permissions.';
+          break;
+        case 'not-allowed':
+          errorMessage = 'Microphone access denied. Please allow microphone access.';
+          break;
+        case 'network':
+          errorMessage = 'Network error occurred. Please check your connection.';
+          break;
+      }
+      
+      document.getElementById('voiceStatusText').textContent = errorMessage;
+      setTimeout(() => {
+        stopVoiceSearch();
+      }, 2000);
+    };
+    
+    recognition.onend = function() {
+      console.log('Voice recognition ended');
+      isListening = false;
+      updateVoiceSearchUI('idle');
+    };
+    
+    return true;
+  } else {
+    console.log('Speech Recognition not supported');
+    return false;
+  }
+}
+
+function startVoiceSearch() {
+  // Initialize speech recognition if not already done
+  if (!recognition) {
+    if (!initializeSpeechRecognition()) {
+      alert('Voice search is not supported in your browser. Please use Chrome, Edge, or Safari.');
+      return;
+    }
+  }
+  
+  // Check if already listening
+  if (isListening) {
+    stopVoiceSearch();
+    return;
+  }
+  
+  // Show the voice search modal
+  const modal = document.getElementById('voiceSearchModal');
+  modal.style.display = 'flex';
+  
+  // Reset UI
+  document.getElementById('voiceStatusText').textContent = 'Listening...';
+  document.getElementById('voiceTranscript').textContent = 'Say something...';
+  
+  // Start speech recognition
+  try {
+    recognition.start();
+  } catch (error) {
+    console.error('Error starting voice recognition:', error);
+    alert('Failed to start voice search. Please try again.');
+    stopVoiceSearch();
+  }
+}
+
+function stopVoiceSearch() {
+  // Stop speech recognition
+  if (recognition && isListening) {
+    recognition.stop();
+  }
+  
+  // Hide the modal
+  const modal = document.getElementById('voiceSearchModal');
+  modal.style.display = 'none';
+  
+  // Reset button state
+  updateVoiceSearchUI('idle');
+  isListening = false;
+}
+
+function updateVoiceSearchUI(state) {
+  const voiceButton = document.getElementById('voiceSearchButton');
+  
+  // Remove all state classes
+  voiceButton.classList.remove('listening', 'error');
+  
+  switch(state) {
+    case 'listening':
+      voiceButton.classList.add('listening');
+      document.getElementById('voiceStatusText').textContent = 'Listening...';
+      break;
+    case 'error':
+      voiceButton.classList.add('error');
+      break;
+    case 'idle':
+    default:
+      // Default state - no additional classes needed
+      break;
+  }
+}
+
+function performVoiceSearch(transcript) {
+  // Set the search input value
+  document.getElementById('searchInput').value = transcript;
+  
+  // Close the voice search modal
+  stopVoiceSearch();
+  
+  // Perform the search
+  searchVideos();
+  
+  // Show success message (optional)
+  console.log('Voice search performed for:', transcript);
+}
+
+// Initialize voice search when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize speech recognition
+  initializeSpeechRecognition();
+  
+  // Add keyboard shortcut for voice search (Ctrl/Cmd + Shift + V)
+  document.addEventListener('keydown', function(event) {
+    if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'V') {
+      event.preventDefault();
+      startVoiceSearch();
+    }
+  });
+  
+  // Close modal when clicking outside
+  document.getElementById('voiceSearchModal').addEventListener('click', function(event) {
+    if (event.target === this) {
+      stopVoiceSearch();
+    }
+  });
+});
