@@ -502,6 +502,25 @@ document.addEventListener('DOMContentLoaded', () => {
       searchVideos();
     }
   });
+  
+  // Scroll to Top Button Functionality
+  const scrollTopBtn = document.getElementById('scrollTopBtn');
+  
+  // Show button when user scrolls down 200px
+  window.onscroll = function () {
+    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+      scrollTopBtn.style.display = 'block';
+    } else {
+      scrollTopBtn.style.display = 'none';
+    }
+  };
+  
+  // Scroll smoothly to top when clicked
+  if (scrollTopBtn) {
+    scrollTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
 });
 
 function handleSubscribe(event) {
@@ -605,24 +624,8 @@ function showTrending() {
       resultsContainer.innerHTML = '<p style="text-align: center; margin: 2rem; font-size: 1.2rem; color: #666;">Unable to load trending videos.</p>';
     });
 }
-}
 
-// Scroll to Top Button Functionality
-const scrollTopBtn = document.getElementById("scrollTopBtn");
-
-// Show button when user scrolls down 200px
-window.onscroll = function () {
-    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-        scrollTopBtn.style.display = "block";
-    } else {
-        scrollTopBtn.style.display = "none";
-    }
-};
-
-// Scroll smoothly to top when clicked
-scrollTopBtn.addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-});
+// Scroll to Top Button Functionality will be initialized in DOMContentLoaded
 
 // Voice Search Functionality
 let recognition = null;
