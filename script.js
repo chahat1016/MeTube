@@ -3,6 +3,12 @@ const SEARCH_ENDPOINT = 'https://www.googleapis.com/youtube/v3/search';
 let isDescriptionVisible = true;
 let isCommentVisible = false;
 
+// View Mode Toggle
+let currentView = localStorage.getItem('viewMode') || 'grid';
+
+// Theme System
+let currentTheme = localStorage.getItem('theme') || 'light';
+
 function searchVideos(category = '') {
   const searchInput = document.getElementById('searchInput').value;
   const videoWrapper = document.getElementById('videoWrapper');
@@ -72,14 +78,22 @@ function searchVideos(category = '') {
     // Ignore cache errors (e.g., storage disabled)
   }
 
-  // Show search skeletons while fetching
+  // Show enhanced search skeletons while fetching
   try {
     const tpl = document.getElementById('searchResultSkeleton');
     const resultsContainer = document.getElementById('searchResults');
+    resultsContainer.classList.add('content-loading');
+    
     if (tpl && tpl.content) {
+      const skeletonCount = currentView === 'grid' ? 8 : 5;
       const frag = document.createDocumentFragment();
-      for (let i = 0; i < 8; i++) {
-        frag.appendChild(tpl.content.cloneNode(true));
+      for (let i = 0; i < skeletonCount; i++) {
+        const skeleton = tpl.content.cloneNode(true);
+        const skeletonEl = skeleton.querySelector('.result-item');
+        if (skeletonEl) {
+          skeletonEl.style.animationDelay = `${i * 0.05}s`;
+        }
+        frag.appendChild(skeleton);
       }
       resultsContainer.innerHTML = '';
       resultsContainer.appendChild(frag);
@@ -104,17 +118,20 @@ function searchVideos(category = '') {
         }
         
         if (videoResults.length > 0) {
-          // Display search results
+          // Display search results with animations
           const resultsContainer = document.getElementById('searchResults');
+          resultsContainer.classList.remove('content-loading');
           resultsContainer.innerHTML = '';
-          videoResults.slice(0, 10).forEach(item => {
+          
+          videoResults.slice(0, 10).forEach((item, index) => {
             const videoId = item.id.videoId;
             const title = item.snippet.title;
 
             const resultItem = document.createElement('div');
             resultItem.classList.add('result-item');
+            resultItem.style.animationDelay = `${index * 0.05}s`;
             resultItem.innerHTML = `
-              <img src="${item.snippet.thumbnails.medium.url}" alt="Thumbnail">
+              <img src="${item.snippet.thumbnails.medium.url}" alt="Thumbnail" loading="lazy">
               <p>${title}</p>
             `;
             resultItem.addEventListener('click', () => playVideo(videoId));
@@ -249,11 +266,85 @@ function toggleDescription() {
 
 
 
-function toggleDarkMode() {
+function toggleViewMode() {
+  const searchResults = document.getElementById('searchResults');
+  const viewIcon = document.getElementById('viewIcon');
+  
+  if (currentView === 'grid') {
+    currentView = 'list';
+    searchResults.classList.add('list-view');
+    viewIcon.textContent = 'view_list';
+  } else {
+    currentView = 'grid';
+    searchResults.classList.remove('list-view');
+    viewIcon.textContent = 'grid_view';
+  }
+  
+  localStorage.setItem('viewMode', currentView);
+  
+  // Add transition animation
+  searchResults.style.opacity = '0';
+  setTimeout(() => {
+    searchResults.style.opacity = '1';
+  }, 200);
+}
+
+// Theme System Functions
+function setTheme(theme) {
   const body = document.body;
-  const darkModeIcon = document.getElementById('darkModeIcon');
-  body.classList.toggle("dark-mode");
-  darkModeIcon.innerText = body.classList.contains("dark-mode") ? 'light_mode' : 'dark_mode';
+  
+  // Remove all theme classes
+  body.classList.remove('dark-mode', 'sepia-theme', 'contrast-theme');
+  
+  // Apply new theme
+  switch(theme) {
+    case 'dark':
+      body.classList.add('dark-mode');
+      break;
+    case 'sepia':
+      body.classList.add('sepia-theme');
+      break;
+    case 'contrast':
+      body.classList.add('contrast-theme');
+      break;
+    default:
+      // Light theme (default)
+      break;
+  }
+  
+  currentTheme = theme;
+  localStorage.setItem('theme', theme);
+  
+  // Close theme menu
+  document.getElementById('themeMenu').classList.add('hidden');
+  
+  // Animate theme transition
+  body.style.transition = 'all 0.3s ease';
+}
+
+function toggleThemeMenu() {
+  const themeMenu = document.getElementById('themeMenu');
+  themeMenu.classList.toggle('hidden');
+  
+  // Close menu when clicking outside
+  if (!themeMenu.classList.contains('hidden')) {
+    setTimeout(() => {
+      document.addEventListener('click', closeThemeMenu);
+    }, 100);
+  }
+}
+
+function closeThemeMenu(e) {
+  const themeSelector = document.querySelector('.theme-selector');
+  if (!themeSelector.contains(e.target)) {
+    document.getElementById('themeMenu').classList.add('hidden');
+    document.removeEventListener('click', closeThemeMenu);
+  }
+}
+
+// Keep old toggleDarkMode for backward compatibility
+function toggleDarkMode() {
+  setTheme(currentTheme === 'dark' ? 'light' : 'dark');
 }
 
 
@@ -496,6 +587,17 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Hide video section by default
   videoSection.classList.add('no-video');
+  
+  // Apply saved theme on load
+  if (currentTheme !== 'light') {
+    setTheme(currentTheme);
+  }
+  
+  // Apply saved view mode on load
+  if (currentView === 'list') {
+    document.getElementById('searchResults').classList.add('list-view');
+    document.getElementById('viewIcon').textContent = 'view_list';
+  }
 
   searchInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
