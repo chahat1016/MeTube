@@ -797,7 +797,7 @@ body {
 .footer-links {
   display: flex;
   gap: 16px;
-  align-items: center;
+  align-items: left;
 }
 
 .footer-links a {
