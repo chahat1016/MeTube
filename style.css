@@ -394,6 +394,128 @@ body.navbar-shrink .main-content {
   background: #ff3742;
 }
 
+/* Keyboard Shortcuts Modal */
+.keyboard-shortcuts-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.keyboard-shortcuts-content {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.shortcuts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.shortcuts-header h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.shortcuts-close-btn {
+  background: none;
+  border: none;
+  font-size: 32px;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.shortcuts-close-btn:hover {
+  background: #f0f0f0;
+  color: #ff4757;
+}
+
+.shortcuts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.shortcut-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.shortcut-key {
+  background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+  color: #333;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  min-width: 60px;
+  text-align: center;
+  border: 2px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.shortcut-description {
+  color: #666;
+  font-size: 16px;
+}
+
+/* Dark mode styles for keyboard shortcuts */
+.dark-mode .keyboard-shortcuts-content {
+  background: rgba(30, 30, 30, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .shortcuts-header {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .shortcuts-header h2 {
+  color: #ffffff;
+}
+
+.dark-mode .shortcuts-close-btn {
+  color: #ccc;
+}
+
+.dark-mode .shortcuts-close-btn:hover {
+  background: rgba(255, 71, 87, 0.2);
+  color: #ff4757;
+}
+
+.dark-mode .shortcut-key {
+  background: rgba(45, 45, 45, 0.9);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.dark-mode .shortcut-description {
+  color: #ccc;
+}
+
 /* ===== DARK MODE TOGGLE ===== */
 #toggleDarkModeButton {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -1080,6 +1202,45 @@ body.navbar-shrink .main-content {
   text-align: center;
   color: #666;
   font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.keyboard-shortcuts-btn {
+  background: rgba(255, 71, 87, 0.1);
+  border: 1px solid rgba(255, 71, 87, 0.3);
+  color: #ff4757;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+}
+
+.keyboard-shortcuts-btn:hover {
+  background: rgba(255, 71, 87, 0.2);
+  border-color: #ff4757;
+  transform: translateY(-2px);
+}
+
+.keyboard-shortcuts-btn .material-symbols-outlined {
+  font-size: 18px;
+}
+
+.dark-mode .keyboard-shortcuts-btn {
+  background: rgba(255, 71, 87, 0.15);
+  border-color: rgba(255, 71, 87, 0.4);
+  color: #ff4757;
+}
+
+.dark-mode .keyboard-shortcuts-btn:hover {
+  background: rgba(255, 71, 87, 0.25);
+  border-color: #ff4757;
 }
 
 .footer-column {
