@@ -754,4 +754,125 @@ document.addEventListener('DOMContentLoaded', function() {
       stopVoiceSearch();
     }
   });
+  
+  // Initialize keyboard shortcuts
+  initializeKeyboardShortcuts();
 });
+
+// Keyboard Shortcuts Functionality
+function initializeKeyboardShortcuts() {
+  let shortcutsVisible = false;
+  
+  document.addEventListener('keydown', function(event) {
+    // Ignore shortcuts if user is typing in an input field
+    if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+      // Allow Escape to work even in input fields
+      if (event.key === 'Escape') {
+        event.target.blur();
+      }
+      return;
+    }
+    
+    // Keyboard shortcuts
+    switch(event.key.toLowerCase()) {
+      case '/':
+        // Focus search bar
+        event.preventDefault();
+        document.getElementById('searchInput').focus();
+        break;
+        
+      case 'escape':
+        // Close modals or blur search
+        if (document.getElementById('voiceSearchModal').style.display === 'flex') {
+          stopVoiceSearch();
+        } else {
+          document.activeElement.blur();
+        }
+        break;
+        
+      case 'd':
+        // Toggle dark mode
+        toggleDarkMode();
+        break;
+        
+      case 's':
+        // Scroll to search results
+        const searchResults = document.getElementById('searchResults');
+        if (searchResults && searchResults.children.length > 0) {
+          searchResults.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        break;
+        
+      case 'h':
+        // Scroll to top (Home)
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        break;
+        
+      case '?':
+        // Toggle keyboard shortcuts help
+        event.preventDefault();
+        toggleKeyboardShortcutsHelp();
+        break;
+    }
+  });
+}
+
+function toggleKeyboardShortcutsHelp() {
+  let helpModal = document.getElementById('keyboardShortcutsModal');
+  
+  if (!helpModal) {
+    // Create the modal if it doesn't exist
+    helpModal = document.createElement('div');
+    helpModal.id = 'keyboardShortcutsModal';
+    helpModal.className = 'keyboard-shortcuts-modal';
+    helpModal.innerHTML = `
+      <div class="keyboard-shortcuts-content">
+        <div class="shortcuts-header">
+          <h2>⌨️ Keyboard Shortcuts</h2>
+          <button class="shortcuts-close-btn" onclick="toggleKeyboardShortcutsHelp()">×</button>
+        </div>
+        <div class="shortcuts-list">
+          <div class="shortcut-item">
+            <span class="shortcut-key">/</span>
+            <span class="shortcut-description">Focus search bar</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="shortcut-key">D</span>
+            <span class="shortcut-description">Toggle dark mode</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="shortcut-key">S</span>
+            <span class="shortcut-description">Scroll to search results</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="shortcut-key">H</span>
+            <span class="shortcut-description">Scroll to top (Home)</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="shortcut-key">Esc</span>
+            <span class="shortcut-description">Close modals / Blur search</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="shortcut-key">?</span>
+            <span class="shortcut-description">Show/hide this help</span>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(helpModal);
+    
+    // Close when clicking outside
+    helpModal.addEventListener('click', function(event) {
+      if (event.target === this) {
+        toggleKeyboardShortcutsHelp();
+      }
+    });
+  }
+  
+  // Toggle visibility
+  if (helpModal.style.display === 'flex') {
+    helpModal.style.display = 'none';
+  } else {
+    helpModal.style.display = 'flex';
+  }
+}
