@@ -1,4 +1,4 @@
-const API_KEY = 'AIzaSyBxwLXs2czUR-YztwkrN__9Z9yWvODIecs';
+const API_KEY = 'AIzaSyCKECoE9j8tmYKZ5g0qvbmPT0ZA0D3N2Vo';
 const SEARCH_ENDPOINT = 'https://www.googleapis.com/youtube/v3/search';
 let isDescriptionVisible = true;
 let isCommentVisible = false;
