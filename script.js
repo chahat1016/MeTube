@@ -1104,3 +1104,10 @@ function toggleKeyboardShortcutsHelp() {
     helpModal.style.display = 'flex';
   }
 }
+
+// Enable horizontal scroll for related videos on mobile
+const relatedVideosContainer = document.getElementById('relatedVideos');
+if (relatedVideosContainer) {
+    relatedVideosContainer.style.display = 'flex';
+    relatedVideosContainer.style.overflowX = 'auto';
+}
