@@ -2505,6 +2505,47 @@ a:focus-visible {
   }
 }
 
+/* button alignment */
+
+.filter-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1.5rem auto;
+}
+
+
+.filter-btn {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  background-color: #f1f1f1;
+  transform: translateY(-2px);
+}
+
+/* Navbar button alignment */
+.nav-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+/* Footer button (keyboard shortcut) alignment */
+.keyboard-shortcuts-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  justify-content: center;
+}
 /* ===== PICTURE-IN-PICTURE (MINI PLAYER) ===== */
 .video-controls-overlay {
   position: absolute;
